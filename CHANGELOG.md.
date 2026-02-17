@@ -1,0 +1,147 @@
+[v4.7.2] - Modular UI Patch
+Fixed
+Settings Tab: Restored the "Misc" settings section (OCR toggle, Debug Log, Video Clips toggle) that was accidentally removed during the modular refactoring.
+
+UI Layout: Adjusted grid spacing in the settings menu to prevent buttons from overlapping or being squashed.
+
+[v4.7.1] - The Modular Update
+Changed
+Architecture Refactor: Split the monolithic single-file script into a professional 5-file modular structure:
+
+main.py: Entry point and UI handling.
+
+engine.py: Heavy AI processing and Worker logic.
+
+database.py: SQLite "Neural Vault" management.
+
+helpers.py: Utility functions (Paths, JSON).
+
+filters.py: Configuration of detection categories.
+
+Maintainability: Decoupled the UI from the AI engine to allow for easier future upgrades.
+
+[v4.7] - Corruption Resistance
+Added
+Pothole Protection: Implemented a fault-tolerance system for the video reader.
+
+Bad Frame Skipping: Workers now detect read errors (corrupted frames) and skip them instead of crashing.
+
+Tolerance Threshold: The engine will retry up to 50 consecutive bad frames (configurable) before abandoning a file, ensuring minor glitches don't stop the scan.
+
+[v4.6.1] - Anti-Freeze Update
+Fixed
+Ghost Worker Bug: Fixed a critical concurrency issue where crashed workers failed to send a "Done" signal, causing the main queue to hang indefinitely at 99%.
+
+Dead Man's Switch: Wrapped all worker logic in a try...finally block to guarantee a termination signal is sent to the main app, even if the worker process explodes.
+
+[v4.6] - Frame Counter Edition
+Added
+Real-Time Frame Tracking: Replaced the generic "Estimated Time" label with an exact Current Frame / Total Frame counter (e.g., "1,450 / 15,000").
+
+Visual Progress: The progress bar slider is now mathematically linked to the exact percentage of frames processed.
+
+Chunk Summation: In Focus Mode, the progress of all 30 workers is summed dynamically to show the total scan speed of the entire swarm.
+
+[v4.5.2] - Status Logging
+Added
+Verbose Status: The log window now explicitly prints >>> STARTING: [Video] and ✔ COMPLETED: [Video] messages for better user feedback.
+
+Fixed
+Log Visibility: "Status" class messages now bypass the "Debug Mode" filter, ensuring they are always visible to the user.
+
+[v4.5.1] - Queue Logic Fix
+Fixed
+Focus Mode Race Condition: Fixed a bug where adding videos immediately dispatched them to workers before the "Start" button was clicked.
+
+Passive Stacking: Videos are now held in a "Waiting Room" memory stack and only released to the active queue when the user explicitly starts the scan.
+
+Queue Flushing: Added a safety check to wipe any stale tasks from the queue before starting a new batch.
+
+[v4.5] - Optimization & Stability
+Changed
+UI Throttling: Drastically reduced GUI lag by limiting worker-to-UI communication to update only once every 1% of the video (down from every 200 frames).
+
+Added
+ETC Restoration: Re-implemented the "Estimated Time to Completion" calculation when files are first added to the queue.
+
+[v4.4] - Restoration Update
+Added
+Numeric Sliders: Threshold sliders now display their exact float value (e.g., 0.40) for precision tuning.
+
+First Pass Storage: Restored the FIRST_PASS folder logic, allowing users to save raw, unverified detections for debugging purposes.
+
+Fixed
+Missing Options: Re-added the Filter Checkboxes (to toggle specific body parts) and the Debug Log toggle which were missing in previous iterations.
+
+[v4.3] - Feature Complete
+Added
+The Neural Vault: Integrated a persistent SQLite database (scan_history.db) to track every file scanned.
+
+Smart Skip: Added a toggle to automatically skip videos that have already been scanned in previous sessions.
+
+Settings Persistence: Created user_settings.json to automatically save and load user preferences (sliders, toggles, window size) between reboots.
+
+Smart Ingestion: The "Subject Name" input now auto-fills based on the name of the folder dropped into the app.
+
+[v4.2.2] - UI & Safety Patch
+Changed
+Filter Rebalancing: Moved BUTTOCKS_EXPOSED from the Critical category to the Warning category.
+
+Added
+Force Stop: Added a dedicated Red "Stop" button to immediately kill all background processes if the app hangs.
+
+[v4.2.1] - The Hardware Acceleration Update
+Added
+DirectML Injection: Implemented custom logic to force the ONNX Runtime to bypass the CPU and utilize AMD Ryzen AI / Radeon / NVIDIA hardware for inference.
+
+Model Auto-Detect: The script now automatically scans the .NudeNet folder to find the best available model (320n.onnx or 640m.onnx) rather than crashing if a specific file is missing.
+
+Staggered Start: Added a 0.5-second delay between worker spawns to prevent VRAM allocation crashes when initializing 30+ threads.
+
+[v4.2.0] - 2026-02-15
+Changed
+Performance: Optimized the main loop to reduce CPU idle time.
+
+Dependencies: Updated moviepy and customtkinter to latest stable versions.
+
+[v4.1.0] - 2026-02-10
+Added
+Motion Gating: Introduced the pixel-difference algorithm to skip static frames (e.g., empty rooms), reducing total scan time by ~40% on surveillance footage.
+
+Output Sorting: The app now automatically creates sub-folders for each detection label (e.g., VERIFIED/EXPOSED_ANUS).
+
+[v4.0.0] - 2026-01-25 (The "Pro" UI Update)
+Changed
+UI Overhaul: Abandoned the standard tkinter library in favor of CustomTkinter for a modern, dark-mode interface.
+
+Dashboard: Added the "Worker Grid" to visualize the status of individual threads.
+
+Removed
+Legacy CLI: Removed the command-line only mode to focus on the GUI experience.
+
+[v3.5.0] - 2026-01-10
+Added
+Video Clipping: Introduced moviepy integration to cut 5-second context clips around detection timestamps.
+
+Long Path Support: Added the \\?\ prefix logic to handle Windows file paths longer than 260 characters.
+
+[v3.0.0] - 2025-12-20 (The "Swarm" Update)
+Added
+Multiprocessing: Rewrote the core engine from a single-threaded script to a multi-process architecture capable of utilizing all CPU cores.
+
+Queue System: Implemented a multiprocessing.Queue to manage file distribution between workers.
+
+[v2.1.0] - 2025-11-15
+Fixed
+Memory Leak: Fixed a critical issue where cv2.VideoCapture was not releasing file handles, causing RAM usage to spike over time.
+
+Added
+OCR: Integrated pytesseract to scan for on-screen text (usernames, watermarks) alongside visual detection.
+
+[v2.0.0] - 2025-10-01 (The AI Shift)
+Changed
+Detection Engine: Completely replaced OpenCV Haar Cascades with the NudeNet ONNX model for significantly higher accuracy and fewer false positives.
+
+Verification: Added the "Double Check" logic (cropping and re-scanning hits) to filter out misidentified objects (e.g., elbows/knees).
+
+[v1.0.0] - 2025-09-15 (Initial Release)
