@@ -1,0 +1,7 @@
+customtkinter
+opencv-python
+moviepy
+pytesseract
+pillow
+nudenet
+onnxruntime-directml
