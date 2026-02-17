@@ -1,0 +1,15 @@
+# Ignore Database (User History)
+scan_history.db
+
+# Ignore User Settings (Personal Preferences)
+user_settings.json
+
+# Ignore Python Cache
+__pycache__/
+*.py[cod]
+
+# Ignore Output Folders (Don't upload terabytes of scans!)
+Archived_Scans/
+
+# Ignore System Files
+Thumbs.db
